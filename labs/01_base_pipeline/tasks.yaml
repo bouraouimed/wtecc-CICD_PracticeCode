@@ -1,6 +1,99 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
+metadata:apiVersion: tekton.dev/v1beta1
+kind: Task
 metadata:
+  name: echo
+
+spec:
+  params: 
+    - name: message
+      type: string 
+      description: "The message to echo"
+  steps:
+    - name: echo-message
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["$(params.message)"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: checkout
+spec:
+  params: 
+    - name: repo-url
+      type: string 
+      description: "The URL of the git repo to clone"
+    - name: branch
+      type: string 
+      description: "The branch to clone"
+  steps:
+    - name: checkout
+      image: bitnami/git:latest
+      command: ["git"]
+      args: ["clone", "--branch", "$(params.branch)", "$(params.repo-url)"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: lint
+
+spec:
+  steps:
+    - name: lint
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["Calling Flake8 linter…"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tests
+
+spec:
+  steps:
+    - name: tests
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["Running unit tests with PyUnit…"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build
+
+spec:
+  params: 
+    - name: repo-url
+      type: string 
+      description: "The repo url"
+
+  steps:
+    - name: build
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["Building image for $(params.repo-url) …"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy
+
+spec:
+  params: 
+    - name: repo-url
+      type: string 
+      description: "The repo url"
+
+    - name: branch
+      type: string 
+      description: "The branch name"
+  steps:
+    - name: deploy
+      image: alpine:3
+      command: [/bin/echo]
+      args: ["Deploying $(params.branch) branch of $(params.repo-url) …"]
   name: <place-name-here>
 spec:
   steps:
